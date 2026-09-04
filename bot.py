@@ -21,7 +21,7 @@ from telegram.ext import (
 # الإعدادات المهمة
 # ==========================================================
 
-TOKEN = "8372904725:AAF9CSyLo53DOHzwzcnwnXI2B5MHdKVBCV4"
+TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 SPREADSHEET_ID = "1Tt59ai-q3fYu_E1YmhH_tW3eK-uRaJePB0xYcu8fuQA"
 
@@ -70,8 +70,17 @@ def connect_to_sheet():
         "https://www.googleapis.com/auth/drive",
     ]
 
-    credentials = Credentials.from_service_account_file(
-        CREDENTIALS_FILE,
+    credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
+
+    if not credentials_json:
+        raise RuntimeError(
+            "متغير GOOGLE_CREDENTIALS_JSON غير موجود في Railway Variables."
+        )
+
+    credentials_info = json.loads(credentials_json)
+
+    credentials = Credentials.from_service_account_info(
+        credentials_info,
         scopes=scopes,
     )
 
@@ -79,7 +88,6 @@ def connect_to_sheet():
     spreadsheet = client.open_by_key(SPREADSHEET_ID)
 
     return spreadsheet.worksheet(WORKSHEET_NAME)
-
 
 def normalize_date_value(value):
     if value is None:
