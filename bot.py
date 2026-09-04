@@ -74,7 +74,7 @@ def connect_to_sheet():
 
     if not credentials_json:
         raise RuntimeError(
-            "متغير GOOGLE_CREDENTIALS_JSON غير موجود في Railway Variables."
+            "GOOGLE_CREDENTIALS_JSON غير موجود في Railway Variables."
         )
 
     credentials_info = json.loads(credentials_json)
